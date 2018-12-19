@@ -1,4 +1,4 @@
-# <img src="logo.png" alt="kcptun" height="54px" /> 
+# <img src="logo.png" alt="kcptun" height="54px" />
 
 [![Release][13]][14] [![Powered][17]][18] [![MIT licensed][11]][12] [![Build Status][3]][4] [![Go Report Card][5]][6] [![Downloads][15]][16] [![Docker][1]][2]
 
@@ -53,11 +53,11 @@ KCP Server: ./server_linux_amd64 -t "TARGET_IP:8388" -l ":4000" -mode fast2
 ```
 The above commands will establish port forwarding channel for 8388/tcp as:
 
-> Application -> **KCP Client(8388/tcp) -> KCP Server(4000/udp)** -> Target Server(8388/tcp) 
+> Application -> **KCP Client(8388/tcp) -> KCP Server(4000/udp)** -> Target Server(8388/tcp)
 
 which tunnels the original connection:
 
-> Application -> Target Server(8388/tcp) 
+> Application -> Target Server(8388/tcp)
 
 ### Install from source
 
@@ -69,24 +69,24 @@ All precompiled releases are genereated from `build-release.sh` script.
 
 ### Performance
 
-<img src="fast.png" alt="fast.com" height="256px" />       
+<img src="fast.png" alt="fast.com" height="256px" />
 
 ### Basic Tuning Guide
 
 #### Improving Thoughput
 
-> **Q: I have a high speed network link, how to reach the maximum bandwidth?**        
+> **Q: I have a high speed network link, how to reach the maximum bandwidth?**
 
-> **A:** Increase `-rcvwnd` on KCP Client and `-sndwnd` on KCP Server **simultaneously & gradually**, the mininum one decides the maximum transfer rate of the link, as `wnd * mtu / rtt`; Then try downloading something and to see if it meets your requirements. 
+> **A:** Increase `-rcvwnd` on KCP Client and `-sndwnd` on KCP Server **simultaneously & gradually**, the mininum one decides the maximum transfer rate of the link, as `wnd * mtu / rtt`; Then try downloading something and to see if it meets your requirements.
 (mtu is adjustable by `-mtu`)
 
 #### Improving Latency
 
-> **Q: I'm using kcptun for game, I don't want any lag happening.**    
+> **Q: I'm using kcptun for game, I don't want any lag happening.**
 
 > **A:** Lag means packet loss for most of the time, lags can be improved by changing `-mode`.
 
-> eg: `-mode fast3`    
+> eg: `-mode fast3`
 
 > Aggresiveness/Responsiveness on retransmission for embeded modes are:
 
@@ -204,9 +204,9 @@ kcptun is shipped with builtin packet encryption powered by various block encryp
 
 The contents of the packets are completely anonymous with encryption, including the headers(FEC,KCP), checksums and contents. Note that, no matter which encryption method you choose on you upper layer, if you disable encryption by specifying `-crypt none` to kcptun, the transmit will be insecure somehow, since the header is ***PLAINTEXT*** to everyone it would be susceptible to header tampering, such as jamming the *sliding window size*, *round-trip time*, *FEC property* and *checksums*. ```aes-128``` is suggested for minimal encryption since modern CPUs are shipped with [AES-NI](https://en.wikipedia.org/wiki/AES_instruction_set) instructions and performs even better than `salsa20`(check the table below).
 
-Other possible attacks to kcptun includes: a) [traffic analysis](https://en.wikipedia.org/wiki/Traffic_analysis), dataflow on specific websites may have pattern while interchanging data, but this type of eavesdropping has been mitigated by adapting [smux](https://github.com/xtaci/smux) to mix data streams so as to introduce noises, perfect solution to this has not appeared yet, theroretically by shuffling/mixing messages on larger scale network may mitigate this problem.  b) [replay attack](https://en.wikipedia.org/wiki/Replay_attack), since the asymmetrical encryption has not been introduced into kcptun for some reason, capturing the packets and replay them on a different machine is possible, (notice: hijacking the session and decrypting the contents is still *impossible*), so upper layers should contain a asymmetrical encryption system to guarantee the authenticity of each message(to process message exactly once), such as HTTPS/OpenSSL/LibreSSL, only by signing the requests with private keys can eliminate this type of attack. 
+Other possible attacks to kcptun includes: a) [traffic analysis](https://en.wikipedia.org/wiki/Traffic_analysis), dataflow on specific websites may have pattern while interchanging data, but this type of eavesdropping has been mitigated by adapting [smux](https://github.com/xtaci/smux) to mix data streams so as to introduce noises, perfect solution to this has not appeared yet, theroretically by shuffling/mixing messages on larger scale network may mitigate this problem.  b) [replay attack](https://en.wikipedia.org/wiki/Replay_attack), since the asymmetrical encryption has not been introduced into kcptun for some reason, capturing the packets and replay them on a different machine is possible, (notice: hijacking the session and decrypting the contents is still *impossible*), so upper layers should contain a asymmetrical encryption system to guarantee the authenticity of each message(to process message exactly once), such as HTTPS/OpenSSL/LibreSSL, only by signing the requests with private keys can eliminate this type of attack.
 
-Important: 
+Important:
 1. `-crypt` and `-key` must be the same on both KCP Client & KCP Server.
 2. `-crypt xor` is also insecure and vulnerable to [known-plaintext attack](https://en.wikipedia.org/wiki/Known-plaintext_attack), do not use this unless you know what you are doing. (*cryptanalysis note: any type of [counter mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR)) is insecure in packet encryption due to the shorten of counter period and leads to iv/nonce collision*)
 
@@ -325,7 +325,7 @@ The parameters below **MUST** be **IDENTICAL** on **BOTH** side:
 ### References
 
 1. https://github.com/skywind3000/kcp -- KCP - A Fast and Reliable ARQ Protocol.
-1. https://github.com/xtaci/kcp-go/ -- A Production-Grade Reliable-UDP Library for golang
+1. https://github.com/1lann/kcp-go/ -- A Production-Grade Reliable-UDP Library for golang
 1. https://github.com/klauspost/reedsolomon -- Reed-Solomon Erasure Coding in Go.
 1. https://en.wikipedia.org/wiki/Differentiated_services -- DSCP.
 1. http://google.github.io/snappy/ -- A fast compressor/decompressor.
@@ -341,12 +341,12 @@ The parameters below **MUST** be **IDENTICAL** on **BOTH** side:
 1. https://en.wikipedia.org/wiki/Noisy-channel_coding_theorem -- Noisy channel coding theorem
 1. https://play.google.com/store/apps/details?id=com.k17game.k3 -- Battle Zone - Earth 2048, an online strategy game using kcp.
 
-### Donate 
+### Donate
 
 via Ethereum(ETH): Address: 0x2e4b43ab3d0983da282592571eef61ae5e60f726 , Or scan here:
 
-<img src="0x2e4b43ab3d0983da282592571eef61ae5e60f726.png" alt="kcptun" height="120px" /> 
+<img src="0x2e4b43ab3d0983da282592571eef61ae5e60f726.png" alt="kcptun" height="120px" />
 
 via WeChat
 
-<img src="wechat_donate.jpg" alt="kcptun" height="120px" /> 
+<img src="wechat_donate.jpg" alt="kcptun" height="120px" />

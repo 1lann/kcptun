@@ -13,10 +13,10 @@ import (
 
 	"golang.org/x/crypto/pbkdf2"
 
+	kcp "github.com/1lann/kcp-go"
 	"github.com/golang/snappy"
 	"github.com/pkg/errors"
 	"github.com/urfave/cli"
-	kcp "github.com/xtaci/kcp-go"
 	"github.com/xtaci/smux"
 
 	"path/filepath"
@@ -238,6 +238,10 @@ func main() {
 			Value: "", // when the value is not empty, the config path must exists
 			Usage: "config from json file, which will override the command from shell",
 		},
+		cli.BoolFlag{
+			Name:  "usereplies",
+			Usage: "whether or not to use ICMP echo replies for outgoing packets",
+		},
 	}
 	myApp.Action = func(c *cli.Context) error {
 		config := Config{}
@@ -267,6 +271,7 @@ func main() {
 		config.SnmpLog = c.String("snmplog")
 		config.SnmpPeriod = c.Int("snmpperiod")
 		config.Quiet = c.Bool("quiet")
+		config.UseReplies = c.Bool("usereplies")
 
 		if c.String("c") != "" {
 			err := parseJSONConfig(&config, c.String("c"))
@@ -355,7 +360,7 @@ func main() {
 		smuxConfig.KeepAliveInterval = time.Duration(config.KeepAlive) * time.Second
 
 		createConn := func() (*smux.Session, error) {
-			kcpconn, err := kcp.DialWithOptions(config.RemoteAddr, block, config.DataShard, config.ParityShard)
+			kcpconn, err := kcp.DialWithOptions(config.RemoteAddr, block, config.DataShard, config.ParityShard, config.UseReplies)
 			if err != nil {
 				return nil, errors.Wrap(err, "createConn()")
 			}
